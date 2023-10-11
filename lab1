@@ -1,0 +1,52 @@
+import RPi.GPIO as GPIO
+import time
+
+# ZADANIE 2
+# GPIO.setwarnings(False)
+# GPIO.setmode(GPIO.BOARD)
+# GPIO.setup(40, GPIO.OUT)
+# GPIO.setup(38, GPIO.OUT)
+# GPIO.setup(36, GPIO.OUT)
+
+# for i in range(0, 10):
+#     # Czerwony
+#     GPIO.output(40, GPIO.HIGH)
+#     time.sleep(2)
+
+#     # Czerwony i Zolty
+#     GPIO.output(38, GPIO.HIGH)
+#     time.sleep(2)
+
+#     # Zielony
+#     GPIO.output(40, GPIO.LOW)
+#     GPIO.output(38, GPIO.LOW)
+#     GPIO.output(36, GPIO.HIGH)
+#     time.sleep(2)
+
+#     # Zolty
+#     GPIO.output(36, GPIO.LOW)
+#     GPIO.output(38, GPIO.HIGH)
+#     time.sleep(2)
+
+#     # Wylaczenie
+#     GPIO.output(38, GPIO.LOW)
+
+# GPIO.cleanup()
+
+
+# ZADANIE 3
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(32, GPIO.OUT)
+GPIO.setup(26, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+while True:
+    if GPIO.input(26) == 0:
+        print("Button has been pressed!")
+        if GPIO.input(32) == GPIO.HIGH:
+            GPIO.output(32, GPIO.LOW)
+            time.sleep(0.5)
+        else:
+            GPIO.output(32, GPIO.HIGH)
+            time.sleep(0.5)
+
+GPIO.cleanup()
