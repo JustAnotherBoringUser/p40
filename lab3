@@ -1,0 +1,45 @@
+import RPi.GPIO as GPIO
+import time
+import random
+from azure.iot.device import IoTHubDeviceClient, Message
+
+GPIO.setmode(GPIO.BOARD)
+GPIO_TRIGGER = 12
+GPIO_ECHO = 18
+GPIO.setup (GPIO_TRIGGER, GPIO.OUT)
+
+GPIO.setup(GPIO_ECHO, GPIO.IN)
+def distance():
+    GPIO.output(GPIO_TRIGGER, True)
+    time.sleep(0.00001)
+    GPIO.output(GPIO_TRIGGER, False)
+    StartTime = time.time()
+    StopTime = time.time()
+    while GPIO.input(GPIO_ECHO) == 0:
+        StartTime = time.time()
+    while GPIO.input(GPIO_ECHO) == 1:
+        StopTime = time.time()
+    TimeElapsed = StopTime - StartTime
+    distance = (TimeElapsed * 34300) / 2
+    return distance
+
+CONNECTION_STRING = "HostName=IoT-Hub-p40-JJ.azure-devices.net;DeviceId=rp4b-p40-4;SharedAccessKey=WgXnE6La87rF4i2CMN4GaRzmbMYpBECTEAIoTCOczLU="
+MSG_TXT = '{{"distance": {distance}, "temperature": {temperature}}}'
+
+def init():
+    client = IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)
+    return client
+
+def run():
+    client = init()
+    for _ in range(3):
+        param1 = distance()
+        param2 = 21
+        msg_txt_formatted = MSG_TXT.format(distance = param1, temperature = param2)
+        message = Message (msg_txt_formatted)
+        print("Sending message: {} ".format(message))
+        client.send_message ( message )
+        print("Message successfully sent ")
+        time.sleep(1)
+
+run()
